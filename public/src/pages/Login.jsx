@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import Logo from "E:/Pulpit/Chat/public/src/assets/logo.png";
-import { ToastContainer } from "react-toastify";
+import Logo from "../assets/logo.png";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { loginRoute } from "../utils/APIRoutes";
@@ -23,11 +22,11 @@ function Login() {
     theme: "dark",
   };
 
-  // useEffect(()=> {
-  //   if(localStorage.getItem('chat-app-user')){
-  //     navigate('/')
-  //   }
-  //   },[])
+  useEffect(()=> {
+    if(localStorage.getItem('chat-app-user')){
+      navigate('/')
+    }
+    },[])
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -41,12 +40,17 @@ function Login() {
         toast.error(data.msg, toastOptions);
       }
       if (data.status === true) {
-        localStorage.setItem("chat-app-user", JSON.stringify(data.user));
+        localStorage.setItem(
+          process.env.REACT_APP_LOCALHOST_KEY,
+          JSON.stringify(data.user)
+        );
+
+        navigate("/");
+      }else{
+        toast.error("Błąd wyboru awatara. Spróbuj ponownie później.",toastOptions);
       }
-      navigate("/");
     }
   };
-
   const handleValidation = () => {
     const { username, password } = values;
     if(username ==="" && password ===""){

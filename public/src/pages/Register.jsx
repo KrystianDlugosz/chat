@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import Logo from "E:/Pulpit/Chat/public/src/assets/logo.png";
-import { ToastContainer } from "react-toastify";
+import Logo from "../assets/logo.png";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { registerRoute } from "../utils/APIRoutes";
@@ -24,7 +23,6 @@ function Register() {
     draggable: false,
     theme: "dark",
   };
-
   // useEffect(()=> {
   //   if(localStorage.getItem('chat-app-user')){
   //     navigate('/')
@@ -34,28 +32,27 @@ function Register() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (handleValidation()) {
-      const { username, email, password } = values;
+      const { email, username, password } = values;
       const { data } = await axios.post(registerRoute, {
         username,
         email,
         password,
       });
+
       if (data.status === false) {
         toast.error(data.msg, toastOptions);
       }
       if (data.status === true) {
         localStorage.setItem("chat-app-user", JSON.stringify(data.user));
+        navigate("/setAvatar");
       }
-      navigate("/login");
     }
   };
-
   const handleValidation = () => {
     const { username, email, password, confirmPassword } = values;
 
     if (password !== confirmPassword) {
       toast.error("Hasła nie są takie same.", toastOptions);
-
       return false;
     } else if (username.length > 15) {
       toast.error(
